@@ -1,4 +1,6 @@
-const base = require("./basefs.js");
+// The wush virtual file system  -*- js-indent-level: 4 -*-
+
+const base = require("./fsbasefs.js");
 const mounts = require("./mounts.js");
 const path = require("path");
 

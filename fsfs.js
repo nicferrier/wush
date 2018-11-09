@@ -1,5 +1,8 @@
-const base = require("./basefs.js");
+// A wush file system based on node's fs module -*- js-indent-level: 4 -*-
+
+const base = require("./fsbasefs.js");
 const path = require("path");
+const stream = require("stream");
 
 const fs = require("fs");
 
@@ -9,7 +12,7 @@ class FsFs extends base.Fs {
         this.baseDir = baseDir;
     }
 
-    _join(pathToJoin) {
+    _resolve(pathToJoin) {
         return path.join(this.baseDir, pathToJoin);
     }
 
@@ -20,6 +23,20 @@ class FsFs extends base.Fs {
     }
 
     readdir(path) {
+        const p = fs.promises.readdir(this._resolve(path));
+        let dirListBuffer = undefined;
+        return new stream.Readable({
+            async read(size) {
+                if (dirListBuffer === undefined) {
+                    const dirList = await p;
+                    dirListBuffer = dirList.join("\n") + "\n";
+                }
+                const required = dirListBuffer.substring(0, size);
+                dirListBuffer = dirListBuffer.substring(size - 1);
+                // console.log("required", required, ">", dirListBuffer, "<", dirListBuffer.length);
+                this.push(required);
+            }
+        });
     }
 
     readlink(path) {
@@ -27,7 +44,7 @@ class FsFs extends base.Fs {
 
     open(path, flags) {
         console.log("fsfs path", path);
-        return fs.createReadStream(this._join(path)); // FIXME no flags!
+        return fs.createReadStream(this._resolve(path)); // FIXME no flags!
     }
 }
 
