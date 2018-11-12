@@ -24,7 +24,16 @@ const test = async function () {
                 callback();
             }
         }
-        grep(["hello"], {}, stdin, new BufferWritable(), new BufferWritable());
+
+        const procStdout = new BufferWritable();
+        const procStderr = new BufferWritable();
+        grep(["hello"], {}, stdin, procStdout, procStderr);
+
+        stdin.on("end", _ => {
+            procStdout.end();
+            procStderr.end();
+        });
+
     });
 
     assert.deepStrictEqual(

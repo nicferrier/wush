@@ -13,10 +13,6 @@ module.exports = function (cl, env, stdin, stdout, stderr) {
         const matching = linesToMatch.reverse().filter(line => line.indexOf(toMatch) >= 0);
         matching.forEach(line => stdout.write(line + "\n"));
     });
-    stdin.on("end", _ => {
-        stdout.end();
-        stderr.end();
-    });
 };
 
 
