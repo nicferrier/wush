@@ -1,4 +1,5 @@
-// A lot of this was nicked from https://www.stavros.io/posts/python-fuse-filesystem/
+// A lot of this was nicked from https://www.stavros.io/posts/python-fuse-filesystem/ -*- js-indent-level: 4 -*-
+
 const path = require("path");
 
 class Stat {
@@ -41,6 +42,7 @@ class Fs {
         return new Stat();
     }
 
+    // returns a \n delimitted stream of directory entries
     readdir(path) {
     }
 
@@ -115,3 +117,5 @@ module.exports = {
     FsErrors,
     Fs
 };
+
+// End
