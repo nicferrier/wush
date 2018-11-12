@@ -1,6 +1,6 @@
-const fs = require("fs");
+const stream = require("stream");
 
-const grep = function (cl, env, stdin, stdout, stderr) {
+module.exports = function (cl, env, stdin, stdout, stderr) {
     const [toMatch] = cl;
     let buffer = undefined;
     stdin.on("data", chunk => {
@@ -9,18 +9,15 @@ const grep = function (cl, env, stdin, stdout, stderr) {
         buffer = undefined;
         const [lastLine, ...lines] = grepTarget.split("\n").reverse();
         buffer = grepTarget.endsWith("\n") ? undefined : lastLine + "\n";
-        const matching = lines.reverse().filter(line => line.indexOf(toMatch) >= 0);
+        linesToMatch = grepTarget.endsWith("\n") ? lines : [lastLine].concat(lines);
+        const matching = linesToMatch.reverse().filter(line => line.indexOf(toMatch) >= 0);
         matching.forEach(line => stdout.write(line + "\n"));
+    });
+    stdin.on("end", _ => {
+        stdout.end();
+        stderr.end();
     });
 };
 
-
-const callGrep = function () {
-    const stdin = fs.createReadStream("grep-infile");
-    grep(["hello"], {}, stdin, process.stdout, process.stderr);
-}
-
-
-callGrep();
 
 // End
