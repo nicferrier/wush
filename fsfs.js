@@ -17,6 +17,15 @@ class FsFs extends base.Fs {
     }
 
     access(path, mode) {
+        const realPath = this._resolve(path);
+        try {
+            const access = fs.accessSync(realPath, fs.constants.R_OK);
+            return 0;
+        }
+        catch (e) {
+            // console.log("path", realPath, e);
+            return -1;
+        }
     }
 
     getattr(path) {
@@ -41,7 +50,7 @@ class FsFs extends base.Fs {
 
     readlink(path) {
     }
-
+    
     open(path, flags) {
         console.log("fsfs path", path);
         return fs.createReadStream(this._resolve(path)); // FIXME no flags!

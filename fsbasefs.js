@@ -15,6 +15,11 @@ const FsErrors = {
     EACCES: -1
 };
 
+const FsAccess = {
+    READ: 1,
+    WRITE: 2
+}
+
 class Fs {
     constructor() {
     }
@@ -115,6 +120,7 @@ module.exports = {
     FsStat,
     FsError,
     FsErrors,
+    FsAccess,
     Fs
 };
 
