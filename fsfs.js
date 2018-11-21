@@ -52,7 +52,7 @@ class FsFs extends base.Fs {
     }
     
     open(path, flags) {
-        console.log("fsfs path", path);
+        // console.log("fsfs path", path);
         return fs.createReadStream(this._resolve(path)); // FIXME no flags!
     }
 }
