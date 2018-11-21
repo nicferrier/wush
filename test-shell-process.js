@@ -28,7 +28,27 @@ function getOpts() {
     };
 }
 
-shell.process(
-    "wush", {}, getReadable(), process.stdout, process.stderr, getOpts()
-);
+async function test() {
+    const value = await new Promise((resolve, reject) => {
+        let buffer = "";
+        const out = new stream.Writable({
+            write(chunk, encoding, next) {
+                buffer = buffer + chunk;
+                next();
+            },
+            
+            final(callback) {
+                resolve(buffer);
+            }
 
+        });
+        shell.process(
+            "wush", {}, getReadable(), out, process.stderr, getOpts()
+        );
+    });
+    console.log("value >>>", value, "<<<");
+}
+
+test();
+
+// End
