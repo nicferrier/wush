@@ -46,13 +46,14 @@ const reservedWords = Object.keys(builtIns);
 
 class ShellProcess {
     constructor(commandLine, environment, opts) {
-        this.commandLine = commandLine;
-        this.environment = environment;
-        this.stdin = opts.stdin;
-        this.stdout = opts.stdout;
-        this.stderr = opts.stderr;
-        this.root = opts.root;
-        this.cwd = opts.cwd;
+        this.ctx = {};
+        this.ctx.commandLine = commandLine;
+        this.ctx.environment = environment;
+        this.ctx.stdin = opts.stdin;
+        this.ctx.stdout = opts.stdout;
+        this.ctx.stderr = opts.stderr;
+        this.ctx.root = opts.root;
+        this.ctx.cwd = opts.cwd;
     }
 
     process(lines) {
@@ -62,18 +63,7 @@ class ShellProcess {
 
             if (reservedWords.indexOf(firstWord) > -1) {
                 const func = builtIns[firstWord];
-                const commandOpts = {
-                    stdin: this.stdin,
-                    stdout: this.stdout,
-                    stderr: this.stderr,
-                    root: this.root,
-                    cwd: this.cwd
-                }
-                const result = func(wordRest, this.environment, commandOpts);
-                if (result == 0) {
-                    this.cwd = commandOpts.cwd;
-                }
-                // console.log(firstWord, wordRest, result, this.cwd);
+                const result = func(wordRest, this.ctx.environment, this.ctx);
             }
             else {
                 console.log("exe search", firstWord);
