@@ -19,7 +19,20 @@ const builtIns = {
 
     "ls": function (args, env, opts) {
         const {root, cwd, stdout} = opts;
-        console.log("ls", cwd);
+        const lsTargets = [];
+        const lsOpts = {
+            l: false,
+            a: false
+        };
+        args.forEach(arg => {
+            if (arg.startsWith("-")) {
+                const switches = arg.substring(1).split("");
+                switches.forEach(lsSwitch => {
+                    lsOpts[lsSwitch] = true;
+                });
+            }
+        });
+        console.log("ls", lsOpts, cwd);
         root.readdir(cwd).pipe(stdout);  // what data do we need?
         return 0;
     },
